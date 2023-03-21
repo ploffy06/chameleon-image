@@ -1,14 +1,12 @@
-import numpy as np
 import torch
 import torch.nn as nn
 import torchvision
 from torchvision.io import read_image
 import torchvision.transforms as transforms
-from PIL import Image
 
 # ----- image preprocessing -----
 img_transforms = transforms.Compose([
-    transforms.Resize((64, 64))
+    transforms.Resize((128, 128))
     ])
 
 # Souce image here: this is the image we start with
@@ -30,9 +28,18 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.model = nn.Sequential(
             nn.Conv2d(3, 64, 4, 2, 1, bias=False),
+            nn.BatchNorm1d(64),
             nn.LeakyReLU(0.2, inplace=True),
+
+            nn.Conv2d(64, 128, 4, 2, 1, bias=False),
             nn.BatchNorm1d(32),
-            nn.ConvTranspose2d(64, 3, 4, 2, 1, bias=False),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.ConvTranspose2d(128, 64, 4, 2, 1, bias=False),
+            nn.BatchNorm1d(64),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.ConvTranspose2d(64, 3, 4, 2, 1, bias=False)
         )
 
     def __call__(self, x):
@@ -43,8 +50,9 @@ class Model(nn.Module):
         return output_img, out
 
 # ----- initial set up -----
-images = [ transforms.ToPILImage()(src.type(torch.uint8))]
-epoch = 100000
+src_img = transforms.ToPILImage()(src.type(torch.uint8))
+images = [src_img, src_img, src_img, src_img, src_img] # have several of these to make the gif transition nicer
+epoch = 5000
 model = Model()
 criterion = nn.MSELoss()
 
@@ -62,9 +70,9 @@ for i in range(epoch):
     loss.backward()
     optimizer.step()
 
-    if i % 1000 == 0:
-        print(f"epoch: {i}, loss: {loss}")
     if i % 100 == 0:
+        print(f"epoch: {i}, loss: {loss}")
+    if i % 10 == 0:
         images.append(output_img)
 
 # ----- creating a gif file -----
