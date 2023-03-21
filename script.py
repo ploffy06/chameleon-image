@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 
 # ----- image preprocessing -----
 img_transforms = transforms.Compose([
-    transforms.Resize((128, 128))
+    transforms.Resize((256, 256))
     ])
 
 # Souce image here: this is the image we start with
@@ -28,15 +28,23 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.model = nn.Sequential(
             nn.Conv2d(3, 64, 4, 2, 1, bias=False),
+            nn.Conv2d(64, 128, 4, 2, 1, bias=False),
             nn.BatchNorm1d(64),
             nn.LeakyReLU(0.2, inplace=True),
 
-            nn.Conv2d(64, 128, 4, 2, 1, bias=False),
-            nn.BatchNorm1d(32),
+
+            nn.Conv2d(128, 256, 4, 2, 1, bias=False),
+            nn.Conv2d(256, 32, 4, 2, 1, bias=False),
+            nn.BatchNorm1d(16),
+            nn.LeakyReLU(0.2, inplace=True),
+
+            nn.ConvTranspose2d(32, 256, 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(256, 128, 4, 2, 1, bias=False),
+            nn.BatchNorm1d(64),
             nn.LeakyReLU(0.2, inplace=True),
 
             nn.ConvTranspose2d(128, 64, 4, 2, 1, bias=False),
-            nn.BatchNorm1d(64),
+            nn.BatchNorm1d(128),
             nn.LeakyReLU(0.2, inplace=True),
 
             nn.ConvTranspose2d(64, 3, 4, 2, 1, bias=False)
@@ -52,7 +60,7 @@ class Model(nn.Module):
 # ----- initial set up -----
 src_img = transforms.ToPILImage()(src.type(torch.uint8))
 images = [src_img, src_img, src_img, src_img, src_img] # have several of these to make the gif transition nicer
-epoch = 5000
+epoch = 2500
 model = Model()
 criterion = nn.MSELoss()
 
