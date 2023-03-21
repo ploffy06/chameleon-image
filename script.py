@@ -32,7 +32,6 @@ class Model(nn.Module):
             nn.BatchNorm1d(64),
             nn.LeakyReLU(0.2, inplace=True),
 
-
             nn.Conv2d(128, 256, 4, 2, 1, bias=False),
             nn.Conv2d(256, 32, 4, 2, 1, bias=False),
             nn.BatchNorm1d(16),
