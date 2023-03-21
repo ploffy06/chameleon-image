@@ -30,9 +30,9 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.model = nn.Sequential(
             nn.Conv2d(3, 64, 4, 2, 1, bias=False),
+            nn.LeakyReLU(0.2, inplace=True),
             nn.BatchNorm1d(32),
-            nn.ConvTranspose2d( 64, 3, 4, 2, 1, bias=False),
-            nn.BatchNorm1d(64)
+            nn.ConvTranspose2d(64, 3, 4, 2, 1, bias=False),
         )
 
     def __call__(self, x):
@@ -44,7 +44,7 @@ class Model(nn.Module):
 
 # ----- initial set up -----
 images = [ transforms.ToPILImage()(src.type(torch.uint8))]
-epoch = 50000
+epoch = 100000
 model = Model()
 criterion = nn.MSELoss()
 
@@ -61,14 +61,11 @@ for i in range(epoch):
 
     loss.backward()
     optimizer.step()
-    # if loss < 1000: # loss seems to get stuck ~900s... just want to give it a little push
-    #     lr = 1
-    #     for param_group in optimizer.param_groups:
-    #         param_group['lr'] = lr
 
     if i % 1000 == 0:
-        images.append(output_img)
         print(f"epoch: {i}, loss: {loss}")
+    if i % 100 == 0:
+        images.append(output_img)
 
 # ----- creating a gif file -----
 def make_gif(images, filename):

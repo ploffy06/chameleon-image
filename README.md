@@ -7,6 +7,8 @@ This is done by training a model on a neural network, in which the model takes i
 The following is the result of taking a dog as a source image and cat as the target image.
 
 <p align="center" >
+  <img src="dog.jpeg" width="200" height="200"/>
+  <img src="cat.jpeg" width="200" height="200"/>
   <img src="result.gif" alt="animated" width="200" height="200"/>
 </p>
 
