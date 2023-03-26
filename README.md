@@ -1,4 +1,6 @@
 # chameleon-image
+
+## Simple image reconstruction using mse
 Given a source image, `chameleon-image` will "merge" into a target image. The result is stored as a `.gif` file.
 
 The following is the result of taking a dog as a source image and cat as the target image.
@@ -6,10 +8,39 @@ The following is the result of taking a dog as a source image and cat as the tar
 <p align="center" >
   <img src="dog.jpeg" width="200" height="200"/>
   <img src="cat.jpeg" width="200" height="200"/>
-  <img src="result.gif" alt="animated" width="200" height="200"/>
+  <img src="results/result.gif" alt="animated" width="200" height="200"/>
 </p>
 
-## Model
+## NeuralStyle
+Given and content and style image, we can create an image that is the content image in the "style" of the style image.
+
+For example, a cat and dog in the style of Vincent van Gogh.
+
+<p align="center" >
+  <img src="results/dogxvan_256.jpeg" width="200" height="200"/>
+  <img src="results/catxvan_256.jpeg" width="200" height="200"/>
+  <img src="van.jpeg" width="200" height="200"/>
+</p>
+
+<p align="center" >
+  <img src="results/dogxvan1_256.jpeg" width="200" height="200"/>
+  <img src="results/catxvan1_256.jpeg" width="200" height="200"/>
+  <img src="van1.jpeg" width="200" height="200"/>
+</p>
+
+<!-- <p align="center" >
+  <img src="results/dogxvan_512.jpeg" width="200" height="200"/>
+  <img src="results/catxvan_512.jpeg" width="200" height="200"/>
+  <img src="van.jpeg" width="200" height="200"/>
+</p>
+
+<p align="center" >
+  <img src="results/dogxvan1_512.jpeg" width="200" height="200"/>
+  <img src="results/catxvan1_512.jpeg" width="200" height="200"/>
+  <img src="van1.jpeg" width="200" height="200"/> -->
+<!-- </p> -->
+
+## CNN for image reconstructuion
 This is done by training a model on a neural network, in which the model takes in the source image as the input and outputs another image as the target. The model uses a layered convolution architecture in which each block consists of 2 convlutional layers, a batch norm, then finally a LeakyReLU. (I didn't really find much difference between ReLU and LeakyReLU so they can be used interchangeably).
 
 ```
@@ -39,7 +70,7 @@ self.model = nn.Sequential(
 
 The model learns via a MSE loss function in which it is minimizing the "squared distance" between the ouput image from the model and target image. Eventually, the model will learn weights to fit the source image to the target image resulting in a sort of cool looking gif.
 
-## Running the script
+## Running the script - mseloss.py
 If you wish to run the script with your own input images simply change the the first paramter in the following lines.
 
 ```

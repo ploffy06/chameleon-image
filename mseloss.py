@@ -92,7 +92,7 @@ def make_gif(images, filename):
     """
     frames = images
     frame_one = frames[0]
-    fname = filename + ".gif"
+    fname = "results/"  + filename + ".gif"
     frame_one.save(fname, format="GIF", append_images=frames,
                save_all=True, duration=100, loop=0)
 
